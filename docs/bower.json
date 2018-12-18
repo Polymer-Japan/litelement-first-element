@@ -1,0 +1,17 @@
+{
+  "name": "polymer3-first-element",
+  "homepage": "https://github.com/Polymer-Japan/polymer3-first-element",
+  "description": "Get started creating custom elements with Polymer 3",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "codelab-components": "git@github.com:googlecodelabs/codelab-components.git#master"
+  }
+}

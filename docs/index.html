@@ -1,0 +1,406 @@
+<!doctype html>
+
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta name="theme-color" content="#4F7DC9">
+    <meta charset="UTF-8">
+    <title>Build your first LitElement element</title>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="bower_components/codelab-components/google-codelab-elements.html">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+    <style>
+      body {
+        font-family: "Roboto",sans-serif;
+        background: #F8F9FA !important;
+      }
+    </style>
+
+  </head>
+  <body unresolved class="fullbleed">
+
+    <google-codelab title="Build your first LitElement element"
+                    environment="web"
+                    feedback-link="https://github.com/Polymer-Japan/litelement-first-element/issues">
+
+      <google-codelab-step label="Overview" duration="2">
+        <a href="index.ja.html">日本語版はこちら</a>
+        <p>In this codelab, you&#39;ll learn how to build elements using LitElement. You&#39;ll create a simple LitElement element, a toggle button. The finished button will look something like this:</p>
+        <p><img style="max-width: 211.00px" src="img/69740ecd89dbe5a9.png"></p>
+        <p>You&#39;ll be able to use it with simple markup like this:</p>
+        <pre><code>&lt;icon-toggle&gt;&lt;/icon-toggle&gt;</code></pre>
+        <p>This project introduces you to most of the key concepts in working with LitElement.</p>
+        <p>Don&#39;t worry if you don&#39;t understand everything. Each of the concepts presented here is described in detail in the LitElement documentation.</p>
+
+
+      </google-codelab-step>
+
+      <google-codelab-step label="What you&#39;ll need" duration="0">
+        <p>To start the tutorial, you will need some software:</p>
+        <ul>
+          <li>A command line, like xterm or bash</li>
+          <li>A text editor (preferably one that does code highlighting, like <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>, <a href="https://atom.io/" target="_blank">Atom</a> or <a href="http://brackets.io/" target="_blank">Brackets</a> )</li>
+          <li>The <a href="https://www.google.com/chrome/browser/features.html?brand=CHBD&gclid=CjwKCAjw5uTMBRAYEiwA5HxQNmns445SiDx2dJrTUfWgKBYE2fBeOAZOzzvzLb_cSrJJE-4EDQ2JOhoCc_YQAvD_BwE&dclid=CP-vsbyZ5tUCFVK_GAodPekEAw" target="_blank">latest version of Chrome</a></li>
+        </ul>
+        <p>You'll also need to have some basic skills and knowledge:</p>
+        <ul>
+          <li>Using a command line</li>
+          <li>Basic HTML, CSS and JavaScript</li>
+          <li>Basic understanding of programming concepts such as variables, functions, conditionals, and loops</li>
+          <li>Basic understanding of object-oriented programming concepts such as objects, classes, abstraction, and encapsulation</li>
+          <li>That said, I assume you know about as much about web development as I do (very little!). This tutorial is for beginners.</li>
+        </ul>
+        
+      </google-codelab-step>
+
+      <google-codelab-step label="Get set up" duration="5">
+
+        <h2><strong>Install Git</strong></h2>
+        <p>Git is a version control tool. </p>
+        <p><a href="https://git-scm.com/download/" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download the Git Installer</paper-button></a></p>
+        <ol type="1" start="1">
+          <li>Run the Git installer.</li>
+          <li>Check whether Git is correctly installed: <code>git --version</code></li>
+        </ol>
+        <p>If all is well, Git tells you its version info: </p>
+        <p>If you don&#39;t see a Git version number <code>git version 2.19.1</code> at this point, you may need to refer to the <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank">official Git installation instructions</a>. </p>
+        <h2><strong>Install Node and npm</strong></h2>
+        <p><a href="https://nodejs.org/en/about/" target="_blank">Node</a> is a JavaScript runtime environment. <a href="https://www.npmjs.com/" target="_blank">npm</a> is a package manager for Node. They will both be installed when you install Node.</p>
+        <p><a href="https://nodejs.org/en/download/" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download the Node installer</paper-button></a></p>
+        <ol type="1" start="1">
+          <li>Download and run the Node installer (this will install npm as well).</li>
+          <li>Update npm to the latest version: <code>npm install npm@latest -g </code></li>
+          <li>Check that Node and npm are correctly installed. Run the following commands:</li>
+        </ol>
+        <p><code>node -v</code> is <code>v10.14.2</code> at this point</p>
+        <p><code>npm -v</code> is <code>6.4.1</code> at this point</p>
+        <p>If you don&#39;t see version numbers for Node and npm, you may need to refer to the <a href="https://www.npmjs.com/get-npm" target="_blank">official installation instructions on the npm website</a>.</p>
+
+        <h2><strong>Install the Codelab</strong></h2>
+
+        <p>Clone this repo:</p>
+        <pre>git clone https://github.com/Polymer-Japan/litelement-first-element.git</pre>
+
+        <h2><strong>Install Dependencies</strong></h2>
+
+        <p>Change directory to your local repo and install dependencies with npm</p>
+        <pre>cd litelement-first-elements
+npm install</pre>
+
+        <p><strong>Fetching the components may take some time if your internet connection is slow</strong>. </p>
+        <p>When the installation finishes, your project folder should look something like this:</p>
+        <p><img style="max-width: 430.00px" src="img/7ff367d9be2655df.png"></p>
+        
+        <p>The main file you&#39;ll work with is <code>icon-toggle.js</code>, which contains the definition for your custom element.</p>
+        <h2><strong>Run the demo</strong></h2>
+        <p>Cool - you made an app! It's that easy. The app doesn't do much yet, but let's take a look at it.</p>
+        <pre>npm start</pre>
+        <p>The Polymer development server starts up, and opens the demo in a new browser tab. You'll see some text where the icon toggles should appear. It doesn't look very interesting, but it shows everything is working.</p>
+        <p><img style="max-width: 430.00px" src="img/d3f56e9f490ca832.png"></p>
+
+        <aside class="special"><p><strong>If you don&#39;t see this text appear</strong>, make sure you open <code>http://127.0.0.1:8081/demo/</code> or  <code>http://127.0.0.1:8081/demo/index.html</code> on your browser.</p>
+        </aside>
+
+      </google-codelab-step>
+
+      <google-codelab-step label="Add Shadow DOM" duration="10">
+        <p>Next, you&#39;ll create a simple element that displays an icon. </p>
+        <p>In this step, you&#39;ll learn about:</p>
+        <ul>
+          <li>Creating a custom element using LitElement.</li>
+          <li>Working with Shadow DOM.</li>
+        </ul>
+        <aside class="special"><p><strong>Learn more: Shadow DOM </strong></p>
+          <p>Shadow DOM is a DOM feature that helps you build components. You can think of shadow DOM as a <em>scoped</em> subtree inside your element.</p>
+          <p>To learn more, see <a href="https://www.polymer-project.org/3.0/docs/devguide/shadow-dom" target="_blank">Shadow DOM</a> in the Polymer library docs.</p>
+        </aside>
+        <h2>Edit icon-toggle.js</h2>
+        <p>Open <code>icon-toggle.js</code> in the root on the your Editor. This file contains the skeleton of a custom element. </p>
+        <p>Start by taking a look at the existing code: </p>
+        <h3>Starting code—ES6 Module imports</h3>
+        <pre><code>import { LitElement, html } from '@polymer/lit-element';
+import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/iron-icon/iron-icon.js';
+        </code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li>The <code>import</code> is an <em>ES6 Module import</em>. This works fine for importing application-specific elements and modules.</li>
+          <li>These lines import the LitElement library and another custom element called <code>iron-icons</code> and <code>iron-icon</code> that you&#39;ll use later in this step.</li>
+        </ul>
+        <p>Next is the definition of the element itself:</p>
+        <h3>Starting code—Shadow DOM template</h3>
+        <pre><code>
+
+class IconToggle extends LitElement {
+  render() {
+    return html`
+      &lt;style&gt;
+        /* local DOM styles go here */
+        :host {
+          display: inline-block;
+        }
+      &lt;/style&gt;
+      &lt;!-- local DOM goes here --&gt;
+      &lt;span&gt;Not much here yet.&lt;/span&gt;
+    `;
+  }
+}
+
+        </code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li>To define a custom element, create a class that extends <code>LitElement</code>.</li>
+          <li>To specify the element's template, define a <code>render</code> function on the element's class.</li>
+          <li>The <code>render</code> must return an instance of <code>TemplateResult</code> for lit-html. Use the <code>html</code> helper function to generate an <code>TemplateResult</code> instance from a JavaScript template literal. (You can import the <code>html</code> helper from the <code>lit-element.js</code> module.)</li>
+          <li>The <code>&lt;style&gt;</code> element inside the <code>render</code> lets you define styles that are <em>scoped </em> to the Shadow DOM, so they don&#39;t affect the rest of the document.</li>
+          <li>The <code>:host</code> pseudo-class matches the custom element you&#39;re defining (in this case, the <code>&lt;icon-toggle&gt;</code>). This is the element that contains or <em>hosts </em>the Shadow DOM tree.</li>
+        </ul>
+        <h3>Starting code—element registration</h3>
+        <pre><code>
+window.customElements.define('icon-toggle', IconToggle);
+        </code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li>To register a custom element, pass the created class to the <code>customElements.define</code> method.</li>
+          <li>By specification, the custom element's name <strong>must start with a lower-case ASCII letter and must contain a dash (-)</strong>.</li>
+        </ul>
+        
+        <h3>Create the shadow DOM structure</h3>
+        <p>Now that you&#39;re familiar with the basic layout of the element, add something useful to its shadow DOM template.</p>
+        <p>Find the <code>&lt;span&gt;</code> below the  <code>local DOM goes here</code> comment:</p>
+        <h3>icon-toggle.js—before</h3>
+        <pre><code>    &lt;!-- local DOM goes here --&gt;
+    &lt;span&gt;Not much here yet.&lt;/span&gt;
+  `;</code></pre>
+        <p> Replace the <code>&lt;span&gt;</code> and its contents with the <code>&lt;iron-icon&gt;</code> tag below:</p>
+        <h3>icon-toggle.js—after</h3>
+        <pre><code>    &lt;!-- local DOM goes here --&gt;
+    &lt;iron-icon icon=&#34;polymer&#34;&gt;
+    &lt;/iron-icon&gt;
+  `;</code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li>The <code>&lt;iron-icon&gt;</code> element is a custom element that renders an icon. Here it&#39;s hard-coded to use an icon named &#34;polymer&#34;. </li>
+        </ul>
+        <h3>Style the shadow DOM</h3>
+        <p>There are a number of new CSS selectors to work with shadow DOM. The <code>icon-toggle.js</code> file already includes a <code>:host</code> selector, discussed earlier, to style the top-level <code>&lt;icon-toggle&gt;</code> element.</p>
+        <p>To style the <code>&lt;iron-icon&gt;</code> element, add the following CSS inside the <code>&lt;style&gt;</code> tag after the existing content:</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>    &lt;style&gt;
+      /* local styles go here */
+      :host {
+        display: inline-block;
+      }
+      iron-icon {
+        fill: rgba(0,0,0,0);
+        stroke: currentcolor;
+      }
+      :host([pressed]) iron-icon {
+        fill: currentcolor;
+      }
+    &lt;/style&gt;</code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li>The <code>&lt;iron-icon&gt;</code> tag uses an SVG icon. The <code>fill</code> and <code>stroke</code> properties are SVG-specific CSS properties. They set the fill color and the outline color for the icon, respectively.</li>
+          <li>The <code>:host()</code> function matches the host element <em>if the selector inside the parentheses matches the host element</em>. In this case,<code>[pressed]</code>is a standard CSS attribute selector, so this rule matches when the <code>icon-toggle</code> has a <code>pressed</code> attribute set on it.</li>
+        </ul>
+        <p>Your custom element definition should now look like this:</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>
+import { LitElement, html } from &#39;@polymer/lit-element&#39;;
+import &#39;@polymer/iron-icons/iron-icons.js&#39;;
+import &#39;@polymer/iron-icon/iron-icon.js&#39;;
+
+/**
+ * `icon-toggle`
+ * Get started creating custom elements with LitElement
+ *
+ * @customElement
+ * @demo demo/index.html
+ */
+class IconToggle extends LitElement {
+  render() {
+    return html`
+      &lt;style&gt;
+        /* local styles go here */
+        :host {
+          display: inline-block;
+        }
+        iron-icon {
+          fill: rgba(0,0,0,0);
+          stroke: currentcolor;
+        }
+        :host([pressed]) iron-icon {
+          fill: currentcolor;
+        }
+      &lt;/style&gt;
+      &lt;!-- local DOM goes here --&gt;
+      &lt;iron-icon icon=&quot;polymer&quot;&gt;
+      &lt;/iron-icon&gt;
+    `;
+  }
+}
+
+window.customElements.define(&#39;icon-toggle&#39;, IconToggle);</code></pre>
+
+        <h3>Setting initial value on Demo page</h3>
+        <p>To display message according to the value in the host element. Please add <code>constructor</code> method for setting the initial value to  <code>isFav</code> property.</p>
+        <h3>icon-toggle-demo.js</h3>
+        <pre><code>class IconToggleDemo extends LitElement {
+  constructor() {
+    super();
+    this.isFav = false;
+  }
+        </code></pre>
+        <p>Reload the demo. You should see the toggle buttons show up with the hard-coded icon. </p>
+        <p><img style="max-width: 430.00px" src="img/bd147086f8894ee.png"></p>
+        <p>You&#39;ll notice that one toggle is styled as pressed, because the <code>pressed</code> attribute is set in the demo. But click all you want, the button won&#39;t toggle yet; there&#39;s no code to change the <code>pressed</code> property.</p>
+        <aside class="special"><p><strong>If you don&#39;t see the new toggles</strong>, double-check your file against the code above. If you see a blank page, make sure url is <code>http://127.0.0.1:8081/demo/</code> or <code>http://127.0.0.1:8081/demo/index.html</code>. </p>
+        </aside>
+
+
+      </google-codelab-step>
+
+      <google-codelab-step label="Use data binding and properties" duration="10">
+        <p>Right now, the element doesn&#39;t do much. In this step, you&#39;ll give it a basic API, allowing you to configure the icon from markup, using an attribute, or from JavaScript, using a property.</p>
+        <p>First, a bit of data binding. Find the <code>&lt;iron-icon&gt;</code> element and change the value of the <code>icon</code> attribute from <code>&#34;polymer&#34;</code> to  &#34;<code>${this.icon}</code>&#34;.</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>&lt;!-- local DOM goes here --&gt;
+&lt;iron-icon icon=&#34;${this.icon}&#34;&gt;
+&lt;/iron-icon&gt;</code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li><code>icon</code> is a <em>property</em> you&#39;ll define on the toggle button element. It doesn&#39;t have a default value yet.</li>
+          <li>The <code>icon=&#34;${this.icon}&#34;</code> assignment is a <em>data binding</em>. It links your element&#39;s <code>icon</code> <em>property</em> with the <code>&lt;iron-icon&gt;</code>&#39;s <code>icon</code> property. </li>
+        </ul>
+        <p>You could now use your element and set the <code>toggleIcon</code> property in markup or using JavaScript, as shown in the following examples. <em>(You don&#39;t need to add this code to your project.)</em></p>
+        <h3>Example—setting the icon using markup</h3>
+        <pre><code>&lt;icon-toggle icon=&#34;favorite&#34;&gt;&lt;/icon-toggle&gt;</code></pre>
+        <h3>Example—setting the icon from JavaScript</h3>
+        <pre><code>var myToggle = document.querySelector(&#39;icon-toggle&#39;);
+myToggle.icon = &#34;favorite&#34;;</code></pre>
+        <p>Next, add a declaration for the <code>icon</code> property.</p>
+        <p>Add the following <code>static get properties</code> function to the IconToggle class:</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>class IconToggle extends LitElement {
+  static get properties() {
+    return {
+      icon: String,
+    };
+  }
+</code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li>To declare properties, add a static <code>properties</code> getter to the element's class. The getter should return an object containing property declarations.</li>
+          <li>A simple property declaration like this one just includes the type (in this case, <code>String</code>).</li>
+        </ul>
+        <aside class="special"><p><strong>Learn more: deserializing attributes</strong></p>
+          <p>The declared property type affects how Polymer converts, or <em>deserializes</em> the attribute value (always a string value) into a JavaScript property value. The default is <code>String</code>, so the declaration of <code>icon</code> is a formality here. To learn more, see <a href="https://lit-element.polymer-project.org/guide/properties#configure-corresponding-attributes" target="_blank">Serialize and deserialize object properties</a> in the LitElement docs.</p>
+        </aside>
+        <p>The <code>properties</code> object also supports several more features. Add the following lines to add support for the <code>pressed</code> property: </p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>
+  constructor() {
+    super();
+    this.pressed = false;
+  }
+  static get properties() {
+    return {
+      icon: String,
+      pressed: {
+        type: Boolean,
+        reflect: true
+      }
+    };
+  }
+</code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li>Specifies the property's default value in the <code> constructor</code> method.</li>
+          <li>For this more complicated property, you supply a configuration object with several fields.</li>
+          <li>The <code>reflect</code> property tells LitElement to <a href="https://lit-element.polymer-project.org/guide/properties#configure-corresponding-attributes" target="_blank">Configure reflection to attributes</a>. This lets you style the element using an attribute selector, like <code>icon-toggle[pressed]</code>.</li>
+        </ul>
+        <p>Now your element has <code>pressed</code> and <code>icon</code> properties working. </p>
+        <p>Reload the demo, and you should see star and heart icons instead of the hard-coded icon from the previous step:</p>
+        <p><img style="max-width: 430.00px" src="img/a11a299579858407.png"></p>
+        <p>If you&#39;re curious about where the stars and hearts come from, you can take a peek at  <code>demo/icon-toggle-demo.js</code> and see lines like this:</p>
+        <pre><code>&lt;icon-toggle toggle-icon=&#34;star&#34;&gt;&lt;/icon-toggle&gt;
+&lt;icon-toggle toggle-icon=&#34;star&#34; pressed&gt;&lt;/icon-toggle&gt;</code></pre>
+
+
+      </google-codelab-step>
+
+      <google-codelab-step label="React to input" duration="5">
+        <p>Of course, a button isn&#39;t a button if you can&#39;t click it. To toggle the button, add an event listener. To add event listeners on the <code>iron-icon</code> element, add the <code>@click</code> attribute to the element:</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>&lt;iron-icon icon=&quot;${this.icon}&quot; @click=&quot;${this.toggle}&quot;&gt;</code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li>Bind <code>toggle</code> method a click event (<code>@<em>event</em></code>) when the user clicks on a target with a mouse or finger.</li>
+        </ul>
+        <p>Add a handler called by the event listener.</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>  toggle() {
+    this.pressed = !this.pressed;
+  }
+  attributeChangedCallback(name, oldval, newval) {
+    super.attributeChangedCallback(name, oldval, newval);
+    if(name === 'pressed') this.dispatchEvent(new CustomEvent('pressed-changed', { detail: this.pressed }));
+  }
+        </code></pre>
+        <p>Key information:</p>
+        <ul>
+          <li>The <code>attributeChangedCallback</code> allows you to monitor changes in attribute values. When the value changes, it fire a <code>pressed-changed</code> event and notifies the owner of the <code>icon-toggle</code> element that the state has changed.</li>
+        </ul>
+        <p>Save the <code>icon-toggle.js</code> file and reload the demo again. You should be able to press the button and see it toggle between its pressed and unpressed states. </p>
+        <p><img style="max-width: 430.00px" src="img/9ccde77fc7ed3f6e.png"></p>
+        <aside class="special"><p><strong>Learn more: data binding</strong></p>
+          <p>To see how the demo works, open <code>demo/icon-toggle-demo.js</code> and take a look around. Yes, the demo for this element is also an element. Element changes the string displayed when you toggle the button.</p>
+        </aside>
+
+
+      </google-codelab-step>
+
+      <google-codelab-step label="Theming: custom CSS properties" duration="8">
+        <p>You now have a button that&#39;s basically functional. But it&#39;s stuck using the existing text color for both pressed and unpressed states. What if you want to get a little flashier?</p>
+        <p>Shadow DOM helps prevent users from styling your element&#39;s internals by accident. Using custom properties, your element can expose a specific set of user-styleable properties.</p>
+        <p>You apply a custom property inside your element using the `var` function.</p>
+        <pre><code>background-color: var(--my-custom-property, defaultValue);</code></pre>
+        <p>Where --<em>my-custom-property</em> is a custom property name, always starting with two dashes (<code>--</code>), and <em>defaultValue</em> is an (optional) CSS value that&#39;s used if the custom property isn&#39;t set.</p>
+        <p>Edit your element&#39;s <code>&lt;style&gt;</code> tag and replace the existing <code>fill</code> and <code>stroke</code> values with custom properties:</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>  &lt;style&gt;
+    /* local styles go here */
+    :host {
+      display: inline-block;
+    }
+    iron-icon {
+      fill: var(--icon-toggle-color, rgba(0,0,0,0));
+      stroke: var(--icon-toggle-outline-color, currentcolor);
+    }
+    :host([pressed]) iron-icon {
+      fill: var(--icon-toggle-pressed-color, currentcolor);
+    }
+  &lt;/style&gt;</code></pre>
+        <p>Because of the default values, you can still style the <code>&lt;icon-toggle&gt;</code> just by setting <code>color</code>, but now you have other options. Open up <code>demo/icon-toggle-demo.js</code> and set the new properties:</p>
+        <h3>icon-toggle-demo.js</h3>
+        <pre><code>    &lt;style&gt;
+      :host {
+        font-family: sans-serif;
+        --icon-toggle-color: lightgrey;
+        --icon-toggle-outline-color: black;
+        --icon-toggle-pressed-color: red;
+      };
+    &lt;/style&gt;</code></pre>
+        <p>Reload the demo again to get colorful.</p>
+        <p><img style="max-width: 430.00px" src="img/7f633b5747fa324e.png"></p>
+        <p>That&#39;s it — you&#39;re finished. You&#39;ve created an element that has a basic UI, API, and custom styling properties.</p>
+        <p>If you have any trouble getting the element working, check out the <a href="https://github.com/Polymer-Japan/litelement-first-element/blob/master/icon-toggle-finished/icon-toggle.js" target="_blank">finished version</a>. </p>
+
+
+      </google-codelab-step>
+
+    </google-codelab>
+
+  </body>
+</html>

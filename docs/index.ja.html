@@ -1,0 +1,406 @@
+<!doctype html>
+
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta name="theme-color" content="#4F7DC9">
+    <meta charset="UTF-8">
+    <title>Build your first LitElement element</title>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="bower_components/codelab-components/google-codelab-elements.html">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+    <style>
+      body {
+        font-family: "Roboto",sans-serif;
+        background: #F8F9FA !important;
+      }
+    </style>
+
+  </head>
+  <body unresolved class="fullbleed">
+
+    <google-codelab title="はじめての LitElement エレメントの作り方"
+                    environment="web"
+                    feedback-link="https://github.com/Polymer-Japan/litelement-first-element/issues">
+
+      <google-codelab-step label="概要" duration="2">
+        <a href="index.html">Click here for English version</a>
+        <p>このcodelabでは、LitElementを使ったカスタムエレメントの作り方について学べます。ボタンをトグルする簡単なLitElementエレメントを作ります。完成イメージは以下のような感じになります。</p>
+        <p><img style="max-width: 211.00px" src="img/69740ecd89dbe5a9.png"></p>
+        <p>これは以下のような簡単なマークアップで利用可能になります。</p>
+        <pre><code>&lt;icon-toggle&gt;&lt;/icon-toggle&gt;</code></pre>
+        <p>このcodelabでは、LitElementを使って作業するための重要なコンセプトについても紹介していきます。</p>
+        <p>もし全てのコンセプトについて理解できなくても心配しないでください。それらの内容はLitElementの公式ドキュメントにより詳しく書かれています。</p>
+
+
+      </google-codelab-step>
+
+      <google-codelab-step label="前提事項" duration="0">
+        <p>チュートリアルを始める前に、以下のソフトウェアがあることを確認してください:</p>
+        <ul>
+          <li>xterm や bash といったコマンドラインツール</li>
+          <li>テキストエディタ (コードハイライトできるものだと完璧です。例えば <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>、 <a href="https://atom.io/" target="_blank">Atom</a> や <a href="http://brackets.io/" target="_blank">Brackets</a> のようなものです)</li>
+          <li><a href="https://www.google.com/chrome/browser/features.html?brand=CHBD&gclid=CjwKCAjw5uTMBRAYEiwA5HxQNmns445SiDx2dJrTUfWgKBYE2fBeOAZOzzvzLb_cSrJJE-4EDQ2JOhoCc_YQAvD_BwE&dclid=CP-vsbyZ5tUCFVK_GAodPekEAw" target="_blank">最新版のChromeブラウザ</a></li>
+        </ul>
+        <p>以下の項目について、基本的なスキルや知識が必要になります:</p>
+        <ul>
+          <li>コマンドラインの使い方</li>
+          <li>HTML, CSS, JavaScriptの基礎</li>
+          <li>変数、関数、状態、ループといったプログラミングの基本的な理解</li>
+          <li>オブジェクト、クラス、抽象化、カプセル化といったオブジェクト指向の基本的な理解</li>
+          <li>Web開発についてもっと知ってるよ！という人がいるかもしれませんが、このチュートリアルは初心者向けです</li>
+        </ul>
+
+      </google-codelab-step>
+
+      <google-codelab-step label="セットアップ" duration="5">
+
+        <h2><strong>Gitのインストール</strong></h2>
+        <p>Gitはバージョン管理ツールです</p>
+        <p><a href="https://git-scm.com/download/" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Gitインストーラーをダウンロードする</paper-button></a></p>
+        <ol type="1" start="1">
+          <li>Gitインストーラーをダウンロードして実行してください</li>
+          <li>次のコマンドを実行して Git のバージョンを確認してください: <code>git --version</code></li>
+        </ol>
+        <p>インストールが成功していれば、Gitのバージョンが表示されるはずです。</p>
+        <p>もしGitのバージョン番号が<code>git version 2.19.1</code>のように表示されない場合は、次のリンクを参照してみることをおススメします。<a href="https://git-scm.com/book/ja/v2/%E4%BD%BF%E3%81%84%E5%A7%8B%E3%82%81%E3%82%8B-Git%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" target="_blank">公式ドキュメント - Gitのインストール</a>. </p>
+        <h2><strong>Node と npm のインストール</strong></h2>
+        <p><a href="https://nodejs.org/en/about/" target="_blank">Node</a>はJavaScriptの実行環境です。<a href="https://www.npmjs.com/" target="_blank">npm</a>はNodeのパッケージ管理ツールです。これらはNodeをインストールすると両方ともインストールされます。</p>
+        <p><a href="https://nodejs.org/en/download/" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Nodeインストーラーをダウンロードする</paper-button></a></p>
+        <ol type="1" start="1">
+          <li>Nodeインストーラーをダウンロードして実行してください(npmもインストールされるはずです)</li>
+          <li>npmを最新版に更新してください: <code>npm install npm@latest -g </code></li>
+          <li>次のコマンドを実行してnodeとnpmのインストールが成功したかを確認してください:</li>
+        </ol>
+        <p>現時点で <code>node -v</code> は <code>v10.14.2</code> でした</p>
+        <p>現時点で <code>npm -v</code> は <code>6.4.1</code> でした</p>
+        <p>バージョン番号が表示されなかったら <a href="https://www.npmjs.com/get-npm" target="_blank">公式ドキュメントのインストールガイド</a>を参照してください</p>
+
+        <h2><strong>チュートリアルをインストールする</strong></h2>
+
+        <p>次のコマンドでリポジトリをクローンしてください。</p>
+        <pre>git clone https://github.com/Polymer-Japan/litelement-first-element.git</pre>
+
+        <h2><strong>依存するパッケージのインストール</strong></h2>
+
+        <p>ディレトリをクローン先に移動してから、npmコマンドで依存するパッケージをインストールします。</p>
+        <pre>cd litelement-first-elements
+npm install</pre>
+
+        <p><strong>インターネット回線が遅いと、とても時間がかかる場合があります...</strong>. </p>
+        <p>インストールが終了すると、以下のようなディレクトリ構造になります。</p>
+        <p><img style="max-width: 430.00px" src="img/7ff367d9be2655df.png"></p>
+
+        <p>作業する主なファイルは<code>icon-toggle.js</code>です。このファイルにはカスタムエレメントの定義が入っています。</p>
+        <h2><strong>デモを実行する</strong></h2>
+        <p>デモの実行方法はとても簡単です。まだアプリは何も実装していませんが、以下のコマンドを実行してみましょう。</p>
+        <pre>npm start</pre>
+        <p>すると、Polymerの開発サーバーが動いて、デモがブラウザ(chrome)の新しいタブで開きます。アイコントグルは表示されず、テキストだけが表示されるはずです。どうってことないかもしれませんが、これで全てがうまく動いていることが確認できます。</p>
+        <p><img style="max-width: 430.00px" src="img/d3f56e9f490ca832.png"></p>
+
+        <aside class="special"><p><strong>もしこのようにテキストが表示されなかったら</strong>、<code>http://127.0.0.1:8081/demo/</code>か<code>http://127.0.0.1:8081/demo/index.html</code>をブラウザで開いてください。</p>
+        </aside>
+
+      </google-codelab-step>
+
+      <google-codelab-step label="Shadow DOMを追加する" duration="10">
+        <p>次に、画面にアイコンを表示するための簡単なエレメントを作ってみましょう。</p>
+        <p>このステップでは、以下のようなことを学習できます。</p>
+        <ul>
+          <li>LitElementを使ったカスタムエレメントの作り方</li>
+          <li>Shadow DOMの動き</li>
+        </ul>
+        <aside class="special"><p><strong>Shadow DOMについて</strong></p>
+          <p>Shadow DOM は、コンポーネントを作るのに役立つ DOM 機能を提供してくれます。Shadow DOM を使うと、エレメントの内側を <em>scoped</em> 構造にできます。</p>
+          <p>もっと詳しく知りたい場合は、公式ドキュメントの <a href="https://www.polymer-project.org/3.0/docs/devguide/shadow-dom" target="_blank">Shadow DOM</a> を参照してください。</p>
+        </aside>
+        <h2>icon-toggle.js を編集する</h2>
+        <p>エディタで<code>icon-toggle.js</code>ファイルを開いてください。このファイルにはカスタムエレメントのスケルトンが入っています。</p>
+        <p>既存コードを見ながら進めましょう。</p>
+        <h3>ES6 Module importsの書き方</h3>
+        <pre><code>import { LitElement, html } from '@polymer/lit-element';
+import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/iron-icon/iron-icon.js';
+        </code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li>この<code>import</code>は<em>ES6 Module import</em>です。アプリケーションで利用するエレメントやモジュールをインポートします。</li>
+          <li>この三行は、LitElementライブラリと、カスタムエレメントと呼ばれる <code>iron-icons</code> と <code>iron-icon</code>をインポートします。これらは、この後で登場します。</li>
+        </ul>
+        <p>次はエレメント自体を定義していきます。</p>
+        <h3>Shadow DOM テンプレートの書き方</h3>
+        <pre><code>
+
+class IconToggle extends LitElement {
+  render() {
+    return html`
+      &lt;style&gt;
+        /* local DOM styles go here */
+        :host {
+          display: inline-block;
+        }
+      &lt;/style&gt;
+      &lt;!-- local DOM goes here --&gt;
+      &lt;span&gt;Not much here yet.&lt;/span&gt;
+    `;
+  }
+}
+
+        </code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li>カスタムエレメントを定義するには、<code>LitElement</code>を継承したクラスを作成します。</li>
+          <li>エレメントのテンプレートを記述する場合は、エレメントに<code>render</code>関数を定義します。</li>
+          <li><code>render</code>はlit-htmlの<code>TemplateResult</code>のインスタンスを返却する必要があります。<code>html</code> ヘルパーを使うとJavaScriptのテンプレートリテラルから<code>TemplateResult</code>インスタンスを生成できます。(<code>html</code> ヘルパーは <code>lit-element.js</code> モジュールからインポートできます)</li>
+          <li><code>render</code>内の<code>&lt;style&gt;</code>エレメントを使うと、Shadow DOMに<em>scopedな(カプセル化された)</em>スタイルを定義できます。これはドキュメントの他の部分には影響を及ぼしません。</li>
+          <li><code>:host</code>擬似クラスは、定義するカスタムエレメントそのもの(この場合は<code>&lt;icon-toggle&gt;</code>エレメント自体)です。</li>
+        </ul>
+        <h3>エレメントの登録方法</h3>
+        <pre><code>
+window.customElements.define('icon-toggle', IconToggle);
+        </code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li>カスタムエレメントを登録するには、<code>customElements.define</code>メソッドの第二引数にエレメントクラスを指定します。</li>
+          <li>第一引数には、カスタムエレメントの名前が必要で、<strong>ASCIIの小文字で始まって、ハイフン(-)を含めなければなりません</strong>。</li>
+        </ul>
+
+        <h3>Shadow DOM構造を作る</h3>
+        <p>エレメントの基本構造にふれたところで、Shadow DOMテンプレートを編集してみましょう。</p>
+        <p><code>local DOM goes here</code>というコメントの後に書いてある<code>&lt;span&gt;</code>タグを見つけてください。</p>
+        <h3>icon-toggle.js—修正前</h3>
+        <pre><code>    &lt;!-- local DOM goes here --&gt;
+    &lt;span&gt;Not much here yet.&lt;/span&gt;
+  `;</code></pre>
+        <p><code>&lt;span&gt;</code>タグを、以下のように<code>&lt;iron-icon&gt;</code>に置き換えてみてください。</p>
+        <h3>icon-toggle.js—修正後</h3>
+        <pre><code>    &lt;!-- local DOM goes here --&gt;
+    &lt;iron-icon icon=&#34;polymer&#34;&gt;
+    &lt;/iron-icon&gt;
+  `;</code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li><code>&lt;iron-icon&gt;</code>エレメントはアイコンを表示するカスタムエレメントです。今は &#34;polymer&#34; という名前をハードコーディングしています。</li>
+        </ul>
+        <h3>Shadow DOMにスタイルを付ける</h3>
+        <p>Shadow DOMで利用できる新しいCSSセレクターがいくつかあります。<code>icon-toggle.js</code>ファイルの<code>:host</code>セレクターはすでに紹介しました。これは<code>&lt;icon-toggle&gt;</code> エレメントそのもののスタイルを指定します。</p>
+        <p><code>&lt;iron-icon&gt;</code>エレメントのスタイルを指定するために、<code>&lt;style&gt;</code>タグ内のCSSを以下の内容に書き換えてください:</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>    &lt;style&gt;
+      /* local styles go here */
+      :host {
+        display: inline-block;
+      }
+      iron-icon {
+        fill: rgba(0,0,0,0);
+        stroke: currentcolor;
+      }
+      :host([pressed]) iron-icon {
+        fill: currentcolor;
+      }
+    &lt;/style&gt;</code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li><code>&lt;iron-icon&gt;</code>タグはSVGアイコンを使っています。<code>fill</code>や<code>stroke</code>は、SVG固有のCSSプロパティです。アイコンの塗りつぶしと輪郭の色をそれぞれ設定します。</li>
+          <li><code>:host()</code>関数は、<em>引数で指定されたセレクタが一致するホスト要素(エレメント)</em>に適用されます。このときの<code>[pressed]</code>は標準のCSS属性セレクタで、<code>icon-toggle</code>エレメントに<code>pressed</code>属性が設定されている場合に、スタイルが適用されます。</li>
+        </ul>
+        <p>これまでの修正で、カスタムエレメント定義は以下のようになっていると思います。</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>
+import { LitElement, html } from &#39;@polymer/lit-element&#39;;
+import &#39;@polymer/iron-icons/iron-icons.js&#39;;
+import &#39;@polymer/iron-icon/iron-icon.js&#39;;
+
+/**
+ * `icon-toggle`
+ * Get started creating custom elements with LitElement
+ *
+ * @customElement
+ * @demo demo/index.html
+ */
+class IconToggle extends LitElement {
+  render() {
+    return html`
+      &lt;style&gt;
+        /* local styles go here */
+        :host {
+          display: inline-block;
+        }
+        iron-icon {
+          fill: rgba(0,0,0,0);
+          stroke: currentcolor;
+        }
+        :host([pressed]) iron-icon {
+          fill: currentcolor;
+        }
+      &lt;/style&gt;
+      &lt;!-- local DOM goes here --&gt;
+      &lt;iron-icon icon=&quot;polymer&quot;&gt;
+      &lt;/iron-icon&gt;
+    `;
+  }
+}
+
+window.customElements.define(&#39;icon-toggle&#39;, IconToggle);</code></pre>
+
+        <h3>デモページの初期値を設定する</h3>
+        <p>ホスト要素の値に応じてメッセージを表示するようにするため、<code>constructor</code>を追加して<code>isFav</code>属性の初期値を設定するように編集してください。</p>
+        <h3>icon-toggle-demo.js</h3>
+        <pre><code>class IconToggleDemo extends LitElement {
+  constructor() {
+    super();
+    this.isFav = false;
+  }
+        </code></pre>
+        <p>デモページをリロードしてください。ハードコーディングしたアイコン表示のトグルボタンが表示されるはずです。</p>
+        <p><img style="max-width: 430.00px" src="img/bd147086f8894ee.png"></p>
+        <p>1つのトグルだけが押されたようなスタイルになっています。そのタグには<code>pressed</code>属性が設定されているためです。しかし、トグルボタンをクリックしても、まだトグルは動きません。<code>pressed</code>プロパティを変更するコードがまだないためです。</p>
+        <aside class="special"><p><strong>新しいトグルが表示されない場合は</strong>、コードを再確認してください。空白のページが表示された場合は、URLが <code>http://127.0.0.1:8081/demo/</code>か<code>http://127.0.0.1:8081/demo/index.html</code>になっているか確認してください。</p>
+        </aside>
+
+
+      </google-codelab-step>
+
+      <google-codelab-step label="データバインディングとプロパティを利用する" duration="10">
+        <p>今のところエレメントは、変化しません。このステップでは、アイコンをマークアップ上から指定するための属性の使い方と、JavaScriptからプロパティを使う方法について、基本的なAPIを紹介します。</p>
+        <p>まず、データバインディングから始めましょう。 <code>&lt;iron-icon&gt;</code>エレメントを探して、<code>icon</code>属性の値を<code>&#34;polymer&#34;</code>から&#34;<code>${this.icon}</code>&#34;に変更してみましょう。</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>&lt;!-- local DOM goes here --&gt;
+&lt;iron-icon icon=&#34;${this.icon}&#34;&gt;
+&lt;/iron-icon&gt;</code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li><code>icon</code>は、後でトグルボタンエレメントの<em>プロパティ</em>として定義します。デフォルト値はまだありません。</li>
+          <li>このように<code>icon=&#34;${this.icon}&#34;</code>と記述することで<em>データバインディング</em>を利用できます。トグルボタンエレメントの<code>icon</code><em>プロパティの値</em>を<code>&lt;iron-icon&gt;</code>の<code>icon</code>プロパティにリンクします。</li>
+        </ul>
+        <p>以下の例のように、エレメントのマークアップで記述するか、JavaScriptを使用して<code>icon</code>プロパティの値を設定できます<em>(このコードをプロジェクトに追加する必要はありません)</em>。</p>
+        <h3>例—マークアップを使ってアイコンを指定する</h3>
+        <pre><code>&lt;icon-toggle icon=&#34;favorite&#34;&gt;&lt;/icon-toggle&gt;</code></pre>
+        <h3>例—JavaScriptからアイコンを指定する</h3>
+        <pre><code>var myToggle = document.querySelector(&#39;icon-toggle&#39;);
+myToggle.icon = &#34;favorite&#34;;</code></pre>
+        <p>続いて、<code>icon</code>プロパティの宣言を追加します。</p>
+        <p>次のような<code>static get properties</code>関数をIconToggleクラスに追加してください:</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>class IconToggle extends LitElement {
+  static get properties() {
+    return {
+      icon: String,
+    };
+  }
+</code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li>プロパティを宣言するには、<code>static get properties</code>関数をエレメントクラスに追加します。この関数は、プロパティ宣言を含むオブジェクトを返す必要があります。</li>
+          <li>これは単純なプロパティ宣言の例で、型(この場合は<code>String</code>)だけを指定します。</li>
+        </ul>
+        <aside class="special"><p><strong>属性のデシリアライズについて</strong></p>
+          <p>プロパティの型宣言は、LitElementが属性値(HTMLでは常に文字列値)をJavaScriptプロパティ値に変換(<em>デシリアライズ</em>)するときに利用します。デフォルトは<code>String</code>で、<code>icon</code>はこの形式です。詳細は、LitElement公式ドキュメントの<a href="https://lit-element.polymer-jp.org/guide/properties#%E9%96%A2%E9%80%A3%E3%81%99%E3%82%8B%E5%B1%9E%E6%80%A7%E3%81%AE%E8%A8%AD%E5%AE%9A" target="_blank">関連する属性の設定</a>を参照してください。</p>
+        </aside>
+        <p><code>properties</code>オブジェクトは、さらにいくつかの機能をサポートしています。<code>pressed</code>プロパティを利用できるようにするため、以下のように変更します。</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>
+  constructor() {
+    super();
+    this.pressed = false;
+  }
+  static get properties() {
+    return {
+      icon: String,
+      pressed: {
+        type: Boolean,
+        reflect: true
+      }
+    };
+  }
+</code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li><code>constructor</code>メソッドでデフォルト値を指定します。</li>
+          <li>複雑なプロパティの場合は、複数のフィールドを持つオブジェクトを指定します。</li>
+          <li><code>reflect</code>を<code>true</code>に設定すると、プロパティ値が変更されたとき属性の値が追従します。これにより、<code>icon-toggle[pressed]</code>のような属性セレクタを使用して要素にスタイルを適用できます。</li>
+        </ul>
+        <p>この修正でエレメントの <code>pressed</code> と <code>icon</code> プロパティが動くようになりました。</p>
+        <p>デモページをリロードすると、前のステップまでハードコーディングされていたアイコンが、星とハートのアイコンに変わって表示されているはずです。</p>
+        <p><img style="max-width: 430.00px" src="img/a11a299579858407.png"></p>
+        <p>星とハートがどこで指定されたのか興味があれば、<code>demo/icon-toggle-demo.js</code>を見てください。以下のように記述されています。</p>
+        <pre><code>&lt;icon-toggle icon=&#34;star&#34;&gt;&lt;/icon-toggle&gt;
+&lt;icon-toggle icon=&#34;star&#34; pressed&gt;&lt;/icon-toggle&gt;</code></pre>
+
+
+      </google-codelab-step>
+
+      <google-codelab-step label="入力に反応させる" duration="5">
+        <p>もちろん、クリックできないボタンはボタンではありません。ボタンをトグルするには、イベントリスナーを追加します。<code>iron-icon</code>エレメントにイベントリスナーを追加するには、以下のように<code>@click</code>プロパティを要素に追加します。</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>&lt;iron-icon icon=&quot;${this.icon}&quot; @click=&quot;${this.toggle}&quot;&gt;</code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li><code>@<em>イベント名</em></code>を利用すると、イベントを取得できるようになります。</li>
+        </ul>
+        <p>イベントリスナーが呼び出すハンドラーを追加します。</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>  toggle() {
+    this.pressed = !this.pressed;
+  }
+  attributeChangedCallback(name, oldval, newval) {
+    super.attributeChangedCallback(name, oldval, newval);
+    if(name === 'pressed') this.dispatchEvent(new CustomEvent('pressed-changed', { detail: this.pressed }));
+  }
+        </code></pre>
+        <p>キーポイント:</p>
+        <ul>
+          <li><code>attributeChangedCallback</code>を利用すると、属性値の変更を監視できるようになります。値が変更されたら<code>pressed-changed</code>イベントを投げて<code>icon-toggle</code>エレメント利用者に状態が変わったことを通知します。</li>
+        </ul>
+        <p><code>icon-toggle.js</code>ファイルを保存し、デモをリロードします。ボタンを押すと、押した状態と押していない状態を切り替えることができるはずです。</p>
+        <p><img style="max-width: 430.00px" src="img/9ccde77fc7ed3f6e.png"></p>
+        <aside class="special"><p><strong>データバインディングについて</strong></p>
+          <p>デモのしくみを見るには、<code>demo/icon-toggle-demo.js</code>を開いて見てください。このエレメントのデモもカスタムエレメントです。エレメントは、ボタンをトグルすると表示文字列を変更するようになっています。</p>
+        </aside>
+
+
+      </google-codelab-step>
+
+      <google-codelab-step label="テーマの適用: カスタムCSSプロパティ" duration="8">
+        <p>これまで、ベーシックな機能のボタンを作りました。しかし、押された状態と押されていない状態の両方ともに、標準テキストカラーを使用しています。ちょっと派手にしたいと思ったら、どうしたら良いでしょう？</p>
+        <p>Shadow DOMは、ユーザーが意図せずにエレメントの内部にスタイルを適用するのを防ぎます（同時に外部からスタイルを指定できなくなります）。こうしたときのために、カスタムプロパティを使うと、エレメント内のスタイルをユーザーが設定できるように特定のプロパティセットを提供できます。</p>
+        <p><code>var</code>関数を使って、エレメント内部にカスタムプロパティを適用します。</p>
+        <pre><code>background-color: var(--my-custom-property, defaultValue);</code></pre>
+        <p>--<em>my-custom-property</em>はカスタムプロパティ名で、常に2つのダッシュ(<code>--</code>)で始まり、<em>defaultValue</em>はカスタムプロパティが設定されていない場合に使用される(オプションの)CSS値です。</p>
+        <p>エレメントの<code>&lt;style&gt;</code>タグを編集し、現在の<code>fill</code>と<code>stroke</code>の値をカスタムプロパティに変更します。</p>
+        <h3>icon-toggle.js</h3>
+        <pre><code>  &lt;style&gt;
+    /* local styles go here */
+    :host {
+      display: inline-block;
+    }
+    iron-icon {
+      fill: var(--icon-toggle-color, rgba(0,0,0,0));
+      stroke: var(--icon-toggle-outline-color, currentcolor);
+    }
+    :host([pressed]) iron-icon {
+      fill: var(--icon-toggle-pressed-color, currentcolor);
+    }
+  &lt;/style&gt;</code></pre>
+        <p>SVGのデフォルト値として、<code>color</code>を設定するだけで<code>&lt;icon-toggle&gt;</code>のスタイルを変更することもできますが、他のオプションを使ってみます。 <code>demo/icon-toggle-demo.js</code>を開き、以下のようにカスタムプロパティを設定します</p>
+        <h3>icon-toggle-demo.js</h3>
+        <pre><code>    &lt;style&gt;
+      :host {
+        font-family: sans-serif;
+        --icon-toggle-color: lightgrey;
+        --icon-toggle-outline-color: black;
+        --icon-toggle-pressed-color: red;
+      };
+    &lt;/style&gt;</code></pre>
+        <p>デモページをリロードするとカラフルになっているはずです。</p>
+        <p><img style="max-width: 430.00px" src="img/7f633b5747fa324e.png"></p>
+        <p>これでチュートリアルは終わりです。基本的なUIやAPIとカスタムスタイリングプロパティを持つ要素を作成しました。</p>
+        <p>もし作業に問題があったときは、<a href="https://github.com/Polymer-Japan/polymer3-first-element/blob/master/icon-toggle-finished/icon-toggle.js" target="_blank">完成版のコード</a>を参照してください。</p>
+
+
+      </google-codelab-step>
+
+    </google-codelab>
+
+  </body>
+</html>
