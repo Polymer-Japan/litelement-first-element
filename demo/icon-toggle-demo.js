@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 import '../icon-toggle.js';
 
 class IconToggleDemo extends LitElement {

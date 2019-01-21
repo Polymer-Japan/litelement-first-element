@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/iron-icon/iron-icon.js';
 
